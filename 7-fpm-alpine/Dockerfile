@@ -3,10 +3,7 @@ FROM php:7-fpm-alpine
 RUN apk add --no-cache --virtual .build-deps \
     zlib-dev
 
-RUN docker-php-ext-install \
-   pdo_mysql \
-   zip
-
+# GD requirements can not be virtual
 RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev
 
 RUN docker-php-ext-configure gd \
@@ -15,6 +12,10 @@ RUN docker-php-ext-configure gd \
     --with-png-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/
 
-RUN docker-php-ext-install gd
+RUN docker-php-ext-install \
+    exif \
+    gd \
+    pdo_mysql \
+    zip
 
 RUN apk del .build-deps
