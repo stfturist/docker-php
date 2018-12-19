@@ -1,6 +1,8 @@
 FROM php:7-fpm-alpine
 
 RUN apk add --no-cache --virtual .build-deps \
+    autoconf \
+    build-base \
     zlib-dev
 
 # GD requirements can not be virtual
@@ -17,5 +19,8 @@ RUN docker-php-ext-install \
     gd \
     pdo_mysql \
     zip
+
+RUN pecl install mongodb \
+    && docker-php-ext-enable mongodb
 
 RUN apk del .build-deps
