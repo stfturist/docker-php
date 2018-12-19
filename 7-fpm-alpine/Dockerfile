@@ -3,7 +3,7 @@ FROM php:7-fpm-alpine
 RUN apk add --no-cache --virtual .build-deps \
     autoconf \
     build-base \
-    zlib-dev
+    libzip-dev
 
 # GD requirements can not be virtual
 RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev
