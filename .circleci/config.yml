@@ -12,13 +12,13 @@ commands:
           command: cd $DOCKER_TAG
       - run:
           name: Login to docker
-          command: echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+          command: echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
       - run:
           name: Build the image
-          command: docker build -t tidyapp/php:$DOCKER_TAG .
+          command: docker build -t "tidyapp/php:${DOCKER_TAG}" .
       - run:
           name: Deploy the image
-          command: docker push tidyapp/php:$DOCKER_TAG
+          command: docker push "tidyapp/php:${DOCKER_TAG}"
 jobs:
   php7-fpm-alpine:
     machine: true
