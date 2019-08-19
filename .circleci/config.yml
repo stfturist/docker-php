@@ -11,8 +11,14 @@ commands:
           name: Enter directory
           command: cd $DOCKER_TAG
       - run:
+          name: Say directory
+          command: pwd
+      - run:
           name: Login to docker
           command: echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
+      - run:
+          name: Say tag
+          command: echo "tidyapp/php:${DOCKER_TAG}"
       - run:
           name: Build the image
           command: docker build -t "tidyapp/php:${DOCKER_TAG}" .
