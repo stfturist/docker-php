@@ -1,13 +1,21 @@
-FROM php:7-fpm-alpine
+ARG TAG=7-fpm-alpine
+
+FROM php:$TAG
 
 RUN apk add --no-cache --virtual .build-deps \
     autoconf \
-    build-base \
-    libzip-dev \
-    gmp-dev
+    build-base
 
-# GD requirements can not be virtual
-RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev
+# PHP modules and GD requirements can not be virtual
+RUN apk add --no-cache \
+    freetype \
+    gmp-dev \
+    libpng \
+    libjpeg-turbo \
+    freetype-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libzip-dev
 
 RUN docker-php-ext-configure gd \
     --with-gd \
@@ -15,7 +23,7 @@ RUN docker-php-ext-configure gd \
     --with-png-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/
 
-RUN docker-php-ext-install \
+RUN docker-php-ext-install -j$(nproc) \
     exif \
     gd \
     gmp \

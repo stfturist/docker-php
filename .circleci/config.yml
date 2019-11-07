@@ -5,33 +5,45 @@ commands:
     steps:
       - checkout
       - run:
-          name: Set tag
-          command: export DOCKER_TAG=$(echo $CIRCLE_JOB | cut -c 4-)
-      - run:
-          name: Enter directory
-          command: cd $DOCKER_TAG
-      - run:
-          name: Say directory
-          command: pwd
+          name: Set docker tag
+          command: |
+            echo 'export DOCKER_TAG=$(echo $CIRCLE_JOB | sed "s/_/./" | cut -c 4-)' >> $BASH_ENV
+            source $BASH_ENV
+            echo "Docker Tag: $DOCKER_TAG"
       - run:
           name: Login to docker
           command: echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
       - run:
-          name: Say tag
-          command: echo "tidyapp/php:${DOCKER_TAG}"
-      - run:
           name: Build the image
-          command: docker build -t "tidyapp/php:${DOCKER_TAG}" .
+          command: docker build -t "tidyapp/php:$DOCKER_TAG" --build-arg "$DOCKER_TAG" .
       - run:
           name: Deploy the image
-          command: docker push "tidyapp/php:${DOCKER_TAG}"
+          command: docker push "tidyapp/php:$DOCKER_TAG"
+
 jobs:
   php7-fpm-alpine:
     machine: true
     steps:
       - build-and-push
+  php7_2-fpm-alpine:
+    machine: true
+    steps:
+      - build-and-push
 
 workflows:
-  multi-build:
+  commit:
     jobs:
       - php7-fpm-alpine
+      - php7_2-fpm-alpine
+
+  nightly:
+    jobs:
+      - php7-fpm-alpine
+      - php7_2-fpm-alpine
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
