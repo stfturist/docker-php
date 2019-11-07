@@ -15,17 +15,17 @@ commands:
           command: echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
       - run:
           name: Build the image
-          command: docker build -t "tidyapp/php:$DOCKER_TAG" --build-arg "TAG=$DOCKER_TAG" .
+          command: docker build -t "tidyapp/php:$DOCKER_TAG" --build-arg "BASEIMAGE=jitesoft/php:$DOCKER_TAG" .
       - run:
           name: Deploy the image
           command: docker push "tidyapp/php:$DOCKER_TAG"
 
 jobs:
-  php7-fpm-alpine:
+  php7_3-fpm:
     machine: true
     steps:
       - build-and-push
-  php7_2-fpm-alpine:
+  php7_2-fpm:
     machine: true
     steps:
       - build-and-push
@@ -33,13 +33,13 @@ jobs:
 workflows:
   commit:
     jobs:
-      - php7-fpm-alpine
-      - php7_2-fpm-alpine
+      - php7_3-fpm
+      - php7_2-fpm
 
   nightly:
     jobs:
-      - php7-fpm-alpine
-      - php7_2-fpm-alpine
+      - php7_3-fpm
+      - php7_2-fpm
     triggers:
       - schedule:
           cron: "0 0 * * *"
