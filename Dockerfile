@@ -1,4 +1,4 @@
-ARG TAG=7-fpm-alpine
+ARG TAG
 
 FROM php:$TAG
 

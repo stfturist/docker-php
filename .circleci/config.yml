@@ -15,7 +15,7 @@ commands:
           command: echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
       - run:
           name: Build the image
-          command: docker build -t "tidyapp/php:$DOCKER_TAG" --build-arg "$DOCKER_TAG" .
+          command: docker build -t "tidyapp/php:$DOCKER_TAG" --build-arg "TAG=$DOCKER_TAG" .
       - run:
           name: Deploy the image
           command: docker push "tidyapp/php:$DOCKER_TAG"
