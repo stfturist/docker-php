@@ -21,6 +21,10 @@ commands:
           command: docker push "tidyapp/php:$DOCKER_TAG"
 
 jobs:
+  php7_4-fpm:
+    machine: true
+    steps:
+      - build-and-push
   php7_3-fpm:
     machine: true
     steps:
@@ -33,11 +37,13 @@ jobs:
 workflows:
   commit:
     jobs:
+      - php7_4-fpm
       - php7_3-fpm
       - php7_2-fpm
 
   nightly:
     jobs:
+      - php7_4-fpm
       - php7_3-fpm
       - php7_2-fpm
     triggers:
