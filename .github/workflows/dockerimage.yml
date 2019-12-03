@@ -32,7 +32,7 @@ jobs:
       matrix:
         docker-tag: ['7.4-fpm','7.3-fpm','7.2-fpm']
     runs-on: ubuntu-latest
-    if: github.ref == 'master'
+    if: github.ref == 'refs/heads/master'
 
     steps:
     - uses: actions/checkout@v1
