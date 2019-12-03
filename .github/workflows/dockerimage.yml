@@ -1,0 +1,45 @@
+name: Build Docker Image
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        docker-tag: ['7.4-fpm','7.3-fpm','7.2-fpm']
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.repository != 'TidyApp-AB/docker-php'
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run tests
+        run: docker build . --build-arg "BASEIMAGE=jitesoft/php:${{ matrix.docker-tag }}"
+
+  skip-test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.repository == 'TidyApp-AB/docker-php'
+    steps:
+      - name: Skip tests since they run on push
+        run: echo "Skip tests since they run on push"
+
+  build-and-push:
+    needs: test
+    strategy:
+      matrix:
+        docker-tag: ['7.4-fpm','7.3-fpm','7.2-fpm']
+    runs-on: ubuntu-latest
+    if: github.ref == 'master'
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image for tag ${{ matrix.docker-tag }}
+      run: docker build . -t "tidyapp/php:${{ matrix.docker-tag }}" --build-arg "BASEIMAGE=jitesoft/php:${{ matrix.docker-tag }}"
+    - name: Log into registry
+      run: echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+    - name: Push the image
+      run: docker push "tidyapp/php:${{ matrix.docker-tag }}"
+
