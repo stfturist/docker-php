@@ -7,6 +7,8 @@ max_attempts="$1"; shift
 cmd="$@"
 attempt_num=1
 
+set -ex
+
 until $cmd
     do
         if (( attempt_num == max_attempts ))
