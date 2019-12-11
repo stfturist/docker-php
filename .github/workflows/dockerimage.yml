@@ -37,7 +37,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image for tag ${{ matrix.docker-tag }}
-      run: docker build . -t "tidyapp/php:${{ matrix.docker-tag }}" --build-arg "BASEIMAGE=jitesoft/php:${{ matrix.docker-tag }}"
+      run: ./retry.sh 3 docker build . -t "tidyapp/php:${{ matrix.docker-tag }}" --build-arg "BASEIMAGE=jitesoft/php:${{ matrix.docker-tag }}"
     - name: Log into registry
       run: echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
     - name: Push the image
