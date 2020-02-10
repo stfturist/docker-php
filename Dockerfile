@@ -22,11 +22,9 @@ RUN apk add --no-cache --virtual .build-deps \
         --with-png-dir=/usr/include/ \
         --with-jpeg-dir=/usr/include/ \
  && docker-php-source extract \
- && docker-php-ext-get mongodb 1.6.0 \
  && docker-php-ext-install -j$(nproc) \
         gd \
         gmp \
-        mongodb \
         pdo_mysql \
         zip \
  && docker-php-source delete \
