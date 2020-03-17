@@ -29,5 +29,3 @@ RUN apk add --no-cache --virtual .build-deps \
         zip \
  && docker-php-source delete \
  && apk del .build-deps
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
